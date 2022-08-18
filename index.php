@@ -1,9 +1,5 @@
+<?php include('functions/isLogin.php');?>
 <?php 
-session_start();
-if (!isset($_SESSION["login"])){
-    header("Location:login.php");
-    exit;
-}
 include("functions/connection.php");
 ?>
 <script>document.title = "Dashboard";</script>
