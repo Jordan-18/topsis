@@ -15,7 +15,33 @@ jobs:
       with:
         switches: -avzr --delete --exclude=".git" --exclude=".github"
         path: /public_html/yusuf.keifproject.com/
-        remote_path: ${{ secrets.DEPLOY_PATH }}
-        remote_host: ${{ secrets.DEPLOY_HOST }}
-        remote_user: ${{ secrets.DEPLOY_USER }}
-        remote_key: ${{ secrets.DEPLOY_KEY }}
+        remote_path: public_html/yusuf.keifproject.com
+        remote_host: yusuf.keifproject.com/
+        remote_user: u1584221
+        remote_key: -----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAlwpUAbECqrmj8vdeR4BIzXQxsJEGMdgoC49BVxfIXS1tqBYv
+KcW37jtTD+qWeMGqU8wQwLPOqkupT2SvEWnDfaGNu9gCKFmILdkKeSosTaZRt8KK
+MsfiIF2mQ+UiT43nSawPebMU0KNqhA6t812QRXVgXduss6Dk5++Fd1HcA1FMOdk4
+HcbIk/uCRZ6b2Ll5RJKaam//czCcstbn/1bVIBnzg71J+0TgFPs1CRgz+0ePX9cB
+OGiWuIq6YqImEHaKETxTwAgaKsYXvUc8lJRB8DSr6w2bbr5IXTpyrC4Yr/oYpUkB
+VfYlmiN28gWo4L4jtRzlzwVw/gB/WTSXeyXDMQIDAQABAoIBAFn7Ei7ryD3zWGPP
+0L/iAf08Irogu8MIFltEndWH2psADFrd1H0bSEdJ2mMaC0inf5RqdvSGajFz38rn
+nZBPJOJ8U1a8ChUFuaYurhme8UPVOMuzvucfw2wqvnmmUPl5/XcbZSDIejcNk9BW
+enUIoYFvuthPnaRpztUKEcYS43KpmUxsJAYioHhl56l0C8n27OX7NbjftsL/fSoG
+roINJXMZDZbGIr5WLhoSfYAqIO87zXFZcgaXi9ikCyk0aQM4HZMQH6gL4nZYF6wg
+ao9rVAWcdqW+/2pVOzf3GvvEJNCUocVhjjBob0FkRbJX2zxdL/PNYIvZTE7KcpD6
+tGMOQV0CgYEA3Q1+wNfmWoUrYm7eBQsH/0z8gVLtII2pY17r3RyGgxoPaeLUaFLj
+Ee0IIBwEcakk0tq3UhRUKYAOGaiE3qfIJ69983TfG0Ymgz+eppN7p+ajMZpNtWf0
+MkBKaqycTezlmIxXC7v+6EMvSOcydromMr1T7KBGYqch2BrU+H2hUGMCgYEArutG
+BnQeN8lVekgzhDA+tLDsFIpzSZJ/NC1iaCpzKeMrHTzuqvULptOGokSvnYPF35/g
+ZQ35CtIHpDNVh2gLWVhjlBJ1lUsJv7L/hN9L0IZ/77wKw4xeS1jVIPRh9LHuUUFL
+RE3HAmu1nRQym5PISHTSjPkZV9dfeU2rPuGYEFsCgYAwaJQphx5bFG67z6uvTwsh
+Taq+Z3qmdl9x84eTlHugmkRl29bIQd6YPmBZJ8mRWolF47/hqbIEpJZx6AWw/O1I
+Q5ZBioaRYntsorILqKCb1FZItpHt+CXyG0IwujxAlHBzR8iIOVNJae0g+gCDH6Dd
+27hVSYQgdpliyf15rYl2IQKBgHOqvqZ72JOZPj3bSr2pzX1c1PAMUYogJp+RN1ac
+Y4UaZCM0bLp9yhOqIohhFSP6xDlJFnCcmceO9WCeVXtx0LdnHIoI3to3QZ4TNqZd
+plug5S7ZUODYjG4UsvLUx4Wwt1/h5mynZeby5KiXd5OrWLCZF7YC7sBIeijTtF6j
+fROrAoGAWJtUaczZZF72EhKUH2T24d7l/JcMI5zj2Tesud9bFr05dbqDpgr67EeZ
+DuExvHpGOB4yacIp7JKE4c2oy/Yrnce07QQOxp7oKvwh2pmHHJgax5z+bkXmhdmW
+ArJ9iMYQu5yl6xoqAbGnbZpFyFqbpHi/+R35nK19E6YObT/ents=
+-----END RSA PRIVATE KEY-----
