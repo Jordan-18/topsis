@@ -10,12 +10,9 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2.3.2
 
-    - name: 📂 Sync files
-      uses: Burnett01/rsync-deployments@5.2.1
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@3.1.2
       with:
-        switches: -avzr --delete --exclude=".git" --exclude=".github"
-        path: /var/www/yusuf.keifproject.com/
-        remote_path: public_html/yusuf.keifproject.com
-        remote_host: yusuf.keifproject.com
-        remote_user: u1584221
-        remote_key: ${{ secrets.DEPLOY_KEY }}
+        ftp-server: yusuf.keifproject.com
+        ftp-username: u1584221
+        ftp-password: ${{ secrets.DEPLOY_KEY }}
