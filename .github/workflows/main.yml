@@ -14,8 +14,8 @@ jobs:
       uses: Burnett01/rsync-deployments@5.2.1
       with:
         switches: -avzr --delete --exclude=".git" --exclude=".github"
-        path: /public_html/yusuf.keifproject.com/
+        path: /var/www/yusuf.keifproject.com/
         remote_path: public_html/yusuf.keifproject.com
-        remote_host: yusuf.keifproject.com/
+        remote_host: yusuf.keifproject.com
         remote_user: u1584221
         remote_key: ${{ secrets.DEPLOY_KEY }}
