@@ -8,7 +8,7 @@ function Register($data){
     $email = strtolower(stripslashes($data["email"]));
     $password = mysqli_real_escape_string($conn, $data["password"]);
     $password2 =mysqli_real_escape_string($conn, $data["password2"]);
-
+    
     $result=mysqli_query($conn, "SELECT * FROM users WHERE username = '$username' AND email = '$email'");
 
     if(mysqli_fetch_assoc($result)){
@@ -23,6 +23,6 @@ function Register($data){
 
     $passwordhash = password_hash($password, PASSWORD_DEFAULT);
 
-    mysqli_query($conn, "INSERT INTO users VALUES('','$username','$email','$passwordhash')");
+    mysqli_query($conn, "INSERT INTO users VALUES('','$username','$email','$passwordhash','Mahasiswa')");
     return mysqli_affected_rows($conn);
 }

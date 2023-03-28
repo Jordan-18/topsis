@@ -16,7 +16,7 @@ $alternatif = query(
     LEFT JOIN pembagian 
     ON 
     alternatif.alternatif_group = pembagian.pembagian_alternative_group
-    WHERE alternatif.alternatif_mahasiswa = '$username'
+    WHERE alternatif.alternatif_dosen LIKE '%$username%'
     GROUP BY alternatif.alternatif_group");
 
 $user_data = query("SELECT * FROM users WHERE username = '$username'");
@@ -36,9 +36,9 @@ if(isset($_POST["simpan"])){
 <?php include('views/frontend/frontend_upper.php')?>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Alternatif</h1>
+        <h1 class="mt-4">Dosen</h1>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Alternatif</li>
+            <li class="breadcrumb-item active">Dosen</li>
         </ol>
         <div class="row">
             <?php if(isset($_SESSION['alert'])) : 
@@ -53,7 +53,7 @@ if(isset($_POST["simpan"])){
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab" aria-controls="data" aria-selected="true">Data</button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item" role="presentation" style="display: none;">
                         <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab" aria-controls="create" aria-selected="false">Create New</button>
                     </li>
                 </ul>
@@ -64,7 +64,7 @@ if(isset($_POST["simpan"])){
                         <div class="card mb-4 mt-3">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                    Alternatif Table
+                                    Dosen Table
                             </div>
                             <div class="card-body">
                                 <table id="table_alternatif"></table>
@@ -168,6 +168,24 @@ if(isset($_POST["simpan"])){
     </div>
 </main>
 
+<!-- Modal -->
+<div class="modal fade" id="dosenEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Approve Data</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <table id="alternatifDosen" class="table table-bordered">
+          </table>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Display Data -->
 <script>
     $(document).ready( function (){
@@ -177,7 +195,9 @@ if(isset($_POST["simpan"])){
             data : data,
             fnRowCallback: function(row,data,index,rowIndex){
                 $('td:eq(3)',row).html(new Date(data.created_at).toDateString())
-                // $('td:eq(7)',row).html(``)
+                $('td:eq(7)',row).html(`
+                    <button class="btn btn-warning" name="edit" value="${data.alternatif_group}" data-group_id="${data.alternatif_group}" onclick="onEdit(this);"><i class="fa-solid fa-pen"></i></button>
+                `)
             },
             columns: [
                     {data: '', name: '', width:'5%', title: "#"},
@@ -187,6 +207,7 @@ if(isset($_POST["simpan"])){
                     {data: 'pembagian_nilai_dosen', name: 'pembagian_nilai_dosen', title: "N.Dosen"},
                     {data: 'pembagian_nilai_mahasiswa', name: 'pembagian_nilai_mahasiswa', title: "N.Mahasiswa"},
                     {data: 'pembagian_nilai_matkul', name: 'pembagian_nilai_matkul', title: "N.Matkul"},
+                    {name: 'action', title: "Action"},
                     // {data: 'alternatif_group', name: 'alternatif_group', title: "Action"},
                 ],
             columnDefs: [{
@@ -205,13 +226,13 @@ if(isset($_POST["simpan"])){
             $('#row_name').append(`
                     <div class="input_name mb-3">
                         <label for="alternatif1" class="form-label">Name Alternatif ${i+1}</label>
-                        <input type="text" class="form-control" id="name_alternatif${i+1}" name="name_alternatif${i+1}" placeholder="Name Alternatif ${i+1}" min="0" max="5" required>
+                        <input type="text" class="form-control" id="name_alternatif${i+1}" name="name_alternatif${i+1}" placeholder="Name Alternatif ${i+1}" required>
                     </div>
             `)
             $('#row_matkul').append(`
                     <div class="input_matkul mb-3">
                         <label for="alternatif" class="form-label">Mata Kuliah ${i+1}</label>
-                        <input type="text" class="form-control" id="matkul_alternatif${i+1}" name="matkul_alternatif${i+1}" placeholder="Mata Kuliah ${i+1}" min="0" max="5" required>
+                        <input type="text" class="form-control" id="matkul_alternatif${i+1}" name="matkul_alternatif${i+1}" placeholder="Mata Kuliah ${i+1}" required>
                     </div>
             `)
             $('#row_nilai_dosen').append(`
@@ -223,19 +244,112 @@ if(isset($_POST["simpan"])){
             $('#row_nilai_mahasiswa').append(`
                     <div class="input_nilai mb-3">
                         <label for="alternatif" class="form-label">Mhs${i+1}</label>
-                        <input type="number" class="form-control" id="nilai_mahasiswa_alternatif${i+1}" name="nilai_mahasiswa_alternatif${i+1}" placeholder="Nilai ${i+1}" min="0" max="5" required>
+                        <input type="number" class="form-control" id="nilai_mahasiswa_alternatif${i+1}" name="nilai_mahasiswa_alternatif${i+1}" placeholder="Nilai ${i+1}" required>
                     </div>
             `)
             $('#row_nilai_matkul').append(`
                     <div class="input_nilai mb-3">
                         <label for="alternatif" class="form-label">MT${i+1}</label>
-                        <input type="number" class="form-control" id="nilai_matkul_alternatif${i+1}" name="nilai_matkul_alternatif${i+1}" placeholder="Nilai ${i+1}" min="0" max="5" required>
+                        <input type="number" class="form-control" id="nilai_matkul_alternatif${i+1}" name="nilai_matkul_alternatif${i+1}" placeholder="Nilai ${i+1}" required>
                     </div>
             `)
         }
 
         $('#numberofalternatif').val(i);
     }
+
+    onEdit = (el) => {
+        $('#dosenEdit').modal('show');
+        const id = $(el).data('group_id');
+        
+        $.ajax({
+            url: "functions/Detail.php",
+            type:"POST",
+            data: "group_id=" + id,
+            success:function(response){
+                var hasil_alternatif = JSON.parse(response.alternatif)
+                var hasil_pembagian = JSON.parse(response.pembagian)
+                $('#alternatifDosen').DataTable({
+                    processing: true,
+                    data : hasil_alternatif,
+                    fnRowCallback: function(row,data,index,rowIndex){
+                        if(data.alternatif_approve == 1){
+                            $('td:eq(5)',row).html(`
+                                <span class="badge rounded-pill bg-primary">Approved</span>
+                            `)
+                        }
+
+                        if(data.alternatif_approve == null || data.alternatif_approve == 0){
+                            $('td:eq(5)',row).html(`
+                                <button class="btn btn-success" name="approve" data-group_id="${data.alternatif_group}" data-id="${data.alternatif_id}" onclick="onApprove(this);"><i class="fa-solid fa-circle-check"></i> Approve</button>
+                            `)
+                            $('td:eq(2)',row).html(`
+                                <input type="number" class="form-control" placeholder="Nilai Dosen" min="0" max="5" name="nilai-dosen-${data.alternatif_id}" id="nilai-dosen-${data.alternatif_id}" autocomplete="off">
+                            `)
+                        }
+                    },
+                    columns: [
+                        {data: '#', name: '#', title: "#"},
+                        {data: 'alternatif_name', name: 'alternatif_name', title: "Alternatif"},
+                        {data: 'alternatif_nilai_dosen', name: 'alternatif_nilai_dosen', title: "Dosen"},
+                        {data: 'alternatif_nilai_mahasiswa', name: 'alternatif_nilai_mahasiswa', title: "Mahasiswa"},
+                        {data: 'alternatif_nilai_matkul', name: 'alternatif_nilai_matkul', title: "Mata Kuliah"},
+                        {name: 'action', title: "Action"},
+                    ],
+                    columnDefs: [{
+                        "defaultContent": "-",
+                        "targets": "_all"
+                    }]
+                })
+
+                $('#alternatifDosen').css('width','')
+
+                $('#alternatifDosen').DataTable().destroy();
+                
+            }
+        })
+    }
+
+    onApprove = (el) => {
+        var data = $(el).data();
+        let nilaiDosen = $('#nilai-dosen-'+data.id).val();
+
+        if(nilaiDosen == ""){
+            return alert(' Nilai Dosen Belum ter isi');
+        }else{
+            if(confirm('Apakah Anda yakin menyetujui nilai ini ?')){
+                data = {
+                    ...data,
+                    nilaiDosen
+                }
+        
+                let record = btoa(JSON.stringify(data))
+                $.ajax({
+                    url: 'functions/functions.php?approve='+record,
+                    success:function(response){
+                        if(response == 1){
+                            alert('Succesfully');
+                            onEdit('<button class="btn btn-warning" name="edit" data-group_id="'+data.group_id+'" onclick="onEdit(this);"><i class="fa-solid fa-pen"></i></button>')
+    
+                        }else{
+                            alert('Failed to Update');
+                        }
+                    }
+                })
+            }else{
+                return alert('Data Gagal Di input');
+            }
+        }
+    }
+
+    onEditDetail = (el) => {
+        const id = $(el).data();
+        let nilaiDosen = $('#nilai-dosen-'+data.id);
+    }
+
+    $('#dosenEdit').on('hidden.bs.modal', function () {
+        location.reload();
+    });
 </script>
 <script>
     setTimeout(() => {

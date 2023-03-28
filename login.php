@@ -38,6 +38,7 @@
 			// set session 
 			$_SESSION["login"] = true;
 			$_SESSION["username"] = $row["username"];
+			$_SESSION["role"] = $row["role"];
 			if (isset($_POST['remember'])){
 				// buat cookie
 				setcookie('id',$row['id'],time()+60);

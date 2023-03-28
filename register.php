@@ -37,9 +37,10 @@ require "functions/Auth.php";
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
                                     <div class="card-body">
                                         <form action="" method="POST">
-                                            <?php if(isset($_SESSION['danger'])) : 
-                                                $message = $_SESSION['danger']; 
-                                                unset($_SESSION['danger']); 
+                                            <?php 
+                                                if(isset($_SESSION['danger'])) : 
+                                                    $message = $_SESSION['danger']; 
+                                                    unset($_SESSION['danger']); 
                                             ?>
                                                 <div class='p-3 mb-2 bg-danger text-white' id='message'><?= $message ?></div>
                                             <?php endif; ?>

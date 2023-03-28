@@ -24,7 +24,7 @@ function createAlternatif($data)
         $nilai_mahasiswa_alternatif = $data['nilai_mahasiswa_alternatif'.($i+1)];
         $nilai_matkul_alternatif = $data['nilai_matkul_alternatif'.($i+1)];
 
-        mysqli_query($conn, "INSERT INTO alternatif VALUES('','$gen_group_id','$name_alternatif','$dosen','$mahasiswa','$nilai_dosen_alternatif','$nilai_mahasiswa_alternatif','$nilai_matkul_alternatif','$insert_at')");
+        mysqli_query($conn, "INSERT INTO alternatif VALUES('','$gen_group_id','$name_alternatif','$dosen','$mahasiswa','$nilai_dosen_alternatif','$nilai_mahasiswa_alternatif','$nilai_matkul_alternatif','','$insert_at')");
         
         
         $n_Dsn += pow((float)$data['nilai_dosen_alternatif'.($i+1)], 2);
@@ -36,7 +36,7 @@ function createAlternatif($data)
     $n_Mhs = round(sqrt($n_Mhs), 6);
     $n_MT = round(sqrt($n_MT), 6);
 
-    mysqli_query($conn, "INSERT INTO pembagian VALUES('','$gen_group_id','$n_Dsn','$n_Mhs','$n_MT','$b_dsn','$b_mhs','$b_mt')");
+    mysqli_query($conn, "INSERT INTO pembagian VALUES('','$gen_group_id','$n_Dsn','$n_Mhs','$n_MT','$b_dsn','$b_mhs','$b_mt', '')");
  
 
     $_SESSION['alert'] = "Data Berhasil Diinputkan";

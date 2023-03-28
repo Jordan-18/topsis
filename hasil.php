@@ -1,20 +1,36 @@
 <?php include('functions/isLogin.php');?>
 <?php 
 include("functions/Connection.php");
-$matrix = query(
-    "SELECT *
-    FROM alternatif 
-    INNER JOIN pembagian 
-    ON 
-    alternatif.alternatif_group = pembagian.pembagian_alternative_group
-    GROUP BY alternatif.alternatif_group");
+$username = $_SESSION["username"];
+$role = $_SESSION["role"];
+if($role == 'Mahasiswa'){
+    $matrix = query(
+        "SELECT *
+        FROM alternatif 
+        INNER JOIN pembagian 
+        ON 
+        alternatif.alternatif_group = pembagian.pembagian_alternative_group
+        WHERE 
+        alternatif.alternatif_mahasiswa = '$username'
+        AND
+        pembagian.dosen_approve = '1'
+        GROUP BY alternatif.alternatif_group");
+}else{
+    $matrix = query(
+        "SELECT *
+        FROM alternatif 
+        INNER JOIN pembagian 
+        ON 
+        alternatif.alternatif_group = pembagian.pembagian_alternative_group
+        WHERE 
+        alternatif.alternatif_dosen LIKE '%$username%'
+        AND
+        pembagian.dosen_approve = '1'
+        GROUP BY alternatif.alternatif_group");
+}
+
 
 $matrix_json = json_encode($matrix);
-
-// $data_detail = [];
-// if(isset($_POST['detail'])){
-//     $data_detail = detail($_POST['detail']);
-// }
 
 ?>
 <script>document.title = "Nilai Matrix";</script>
