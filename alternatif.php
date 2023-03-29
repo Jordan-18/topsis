@@ -85,7 +85,9 @@ if(isset($_POST["simpan"])){
                             <div class="col-md-2">
                             <div class="mt-3">
                                 <div class="col-sm-10">
-                                <input type="number" class="form-control" id="count_alternatif" onchange="addAlternatif()" placeholder='press ⬆ to Add Row'>
+                                    <button type="button" class="btn btn-primary form-control" id="count_alternatif" onclick="addAlternatif()">
+                                        <i class="fa-solid fa-plus"></i> Tambah
+                                    </button>
                                 </div>
                             </div>
                             </div>
@@ -94,12 +96,14 @@ if(isset($_POST["simpan"])){
 
                         <form action="" method="POST">
                             <div class="row">
-
-                                <div class="col-md-4" id="row_name"></div>
+                                <div id="alternatif_num"></div>
+                                
+                                <div class="col-md-3" id="row_name"></div>
                                 <div class="col-md-2" id="row_matkul"></div>
                                 <div class="col-md-1" id="row_nilai_dosen"></div>
                                 <div class="col-md-1" id="row_nilai_mahasiswa"></div>
                                 <div class="col-md-1" id="row_nilai_matkul"></div>
+                                <div class="col-md-1" id="row_delete"></div>
 
                                 <div class="col-md-3">
                                     <div class="row">
@@ -170,6 +174,9 @@ if(isset($_POST["simpan"])){
 
 <!-- Display Data -->
 <script>
+    var alternatif_num = 0;
+    var selectAlternatif = null;
+    var selectMatakuliah = null;
     $(document).ready( function (){
         var data = <?= $alternatif_json; ?>;
         $('#table_alternatif').DataTable({
@@ -184,10 +191,9 @@ if(isset($_POST["simpan"])){
                     {data: 'alternatif_mahasiswa', name: 'alternatif_mahasiswa', title: "Mahasiswa"},
                     {data: 'alternatif_dosen', name: 'alternatif_dosen', title: "Dosen"},
                     {data: 'created_at', name: 'created_at', title: "Dibuat"},
-                    {data: 'pembagian_nilai_dosen', name: 'pembagian_nilai_dosen', title: "N.Dosen"},
-                    {data: 'pembagian_nilai_mahasiswa', name: 'pembagian_nilai_mahasiswa', title: "N.Mahasiswa"},
-                    {data: 'pembagian_nilai_matkul', name: 'pembagian_nilai_matkul', title: "N.Matkul"},
-                    // {data: 'alternatif_group', name: 'alternatif_group', title: "Action"},
+                    {data: 'pembagian_nilai_dosen', name: 'pembagian_nilai_dosen', title: "Nilai Dosen"},
+                    {data: 'pembagian_nilai_mahasiswa', name: 'pembagian_nilai_mahasiswa', title: "Nilai Mahasiswa"},
+                    {data: 'pembagian_nilai_matkul', name: 'pembagian_nilai_matkul', title: "Nilai Matkul"},
                 ],
             columnDefs: [{
                 "defaultContent": "-",
@@ -196,45 +202,103 @@ if(isset($_POST["simpan"])){
         })
     })
 
-    addAlternatif = () => {
-        const row_al = $('#count_alternatif').val();
-        $('.input_name').remove()
-        $('.input_matkul').remove()
-        $('.input_nilai').remove()
-        for(var i=0; i < row_al; i++){
-            $('#row_name').append(`
-                    <div class="input_name mb-3">
-                        <label for="alternatif1" class="form-label">Name Alternatif ${i+1}</label>
-                        <input type="text" class="form-control" id="name_alternatif${i+1}" name="name_alternatif${i+1}" placeholder="Name Alternatif ${i+1}" min="0" max="5" required>
-                    </div>
-            `)
-            $('#row_matkul').append(`
-                    <div class="input_matkul mb-3">
-                        <label for="alternatif" class="form-label">Mata Kuliah ${i+1}</label>
-                        <input type="text" class="form-control" id="matkul_alternatif${i+1}" name="matkul_alternatif${i+1}" placeholder="Mata Kuliah ${i+1}" min="0" max="5" required>
-                    </div>
-            `)
-            $('#row_nilai_dosen').append(`
-                    <div class="input_nilai mb-3">
-                        <label for="alternatif" class="form-label">Dsn${i+1}</label>
-                        <input type="number" class="form-control" id="nilai_dosen_alternatif${i+1}" name="nilai_dosen_alternatif${i+1}" placeholder="Nilai ${i+1}" readonly>
-                    </div>
-            `)
-            $('#row_nilai_mahasiswa').append(`
-                    <div class="input_nilai mb-3">
-                        <label for="alternatif" class="form-label">Mhs${i+1}</label>
-                        <input type="number" class="form-control" id="nilai_mahasiswa_alternatif${i+1}" name="nilai_mahasiswa_alternatif${i+1}" placeholder="Nilai ${i+1}" min="0" max="5" required>
-                    </div>
-            `)
-            $('#row_nilai_matkul').append(`
-                    <div class="input_nilai mb-3">
-                        <label for="alternatif" class="form-label">MT${i+1}</label>
-                        <input type="number" class="form-control" id="nilai_matkul_alternatif${i+1}" name="nilai_matkul_alternatif${i+1}" placeholder="Nilai ${i+1}" min="0" max="5" required>
-                    </div>
-            `)
+    $.ajax({
+        url: "functions/master/alternatif.php?index",
+        success:function(response){
+            var data = JSON.parse(response)
+
+            selectAlternatif = data
         }
+    })
+
+    $.ajax({
+        url: "functions/master/mata_kuliah.php?index",
+        success:function(response){
+            var data = JSON.parse(response)
+
+            selectMatakuliah = data
+        }
+    })
+
+    addAlternatif = () => {
+        alternatif_num++
+        const i = alternatif_num
+
+        $('#alternatif_num').append(`
+            <input type="hidden" id="alternatif_num${i}" name="alternatif_num[]" value="${i}">
+        `)
+
+        $('#row_name').append(`
+            <div class="input_name mb-3">
+                <label for="alternatif1" class="form-label">Name Alternatif</label>
+                <select class="form-control" id="name_alternatif${i}" name="name_alternatif${i}" required>
+                    <option value="" disabled selected>-- Pilih --</option>
+                <select>
+            </div>
+        `)
+
+        $.each(selectAlternatif, (key, value) =>{
+            $(`#name_alternatif${i}`).append(`
+                <option value="${value.ms_alternatif_name}">${value.ms_alternatif_name}</option>
+            `)
+        })
+
+        $('#row_matkul').append(`
+                <div class="input_matkul mb-3">
+                    <label for="alternatif" class="form-label">Mata Kuliah</label>
+                    <select class="form-control" id="matkul_alternatif${i}" name="matkul_alternatif${i}" required>
+                        <option value="" disabled selected>-- Pilih --</option>
+                    <select>
+                </div>
+        `)
+
+        $.each(selectMatakuliah, (key, value) =>{
+            $(`#matkul_alternatif${i}`).append(`
+                <option value="${value.mata_kuliah_name}">${value.mata_kuliah_name}</option>
+            `)
+        })
+
+        $('#row_nilai_dosen').append(`
+                <div class="input_nilai mb-3">
+                    <label for="alternatif" class="form-label">Dosen</label>
+                    <input type="number" class="form-control" id="nilai_dosen_alternatif${i}" name="nilai_dosen_alternatif${i}" placeholder="Nilai" readonly>
+                </div>
+        `)
+        $('#row_nilai_mahasiswa').append(`
+                <div class="input_nilai mb-3">
+                    <label for="alternatif" class="form-label">Mahasiswa</label>
+                    <input type="number" class="form-control" id="nilai_mahasiswa_alternatif${i}" name="nilai_mahasiswa_alternatif${i}" placeholder="Nilai" min="0" max="5" required>
+                </div>
+        `)
+        $('#row_nilai_matkul').append(`
+                <div class="input_nilai mb-3">
+                    <label for="alternatif" class="form-label">Mata Kuliah</label>
+                    <input type="number" class="form-control" id="nilai_matkul_alternatif${i}" name="nilai_matkul_alternatif${i}" placeholder="Nilai" min="0" max="5" required>
+                </div>
+        `)
+
+        $('#row_delete').append(`
+                <div class="input_name mb-3">
+                    <label for="alternatif1" class="form-label" style="color:white;">Name</label>
+                    <input type="button" class="btn btn-danger form-control" id="button_delete${i}" data-id="${i}" onclick="onHapus(this)" value="Hapus">
+                </div>
+        `)
 
         $('#numberofalternatif').val(i);
+    }
+
+    onHapus = (el) => {
+        var id = $(el).data('id');
+
+        $('#alternatif_num'+id).remove()
+        $('#name_alternatif'+id).parent().remove()
+        $('#matkul_alternatif'+id).parent().remove()
+        $('#nilai_dosen_alternatif'+id).parent().remove()
+        $('#nilai_mahasiswa_alternatif'+id).parent().remove()
+        $('#nilai_matkul_alternatif'+id).parent().remove()
+        $('#button_delete'+id).parent().remove()
+
+        alternatif_num--
     }
 </script>
 <script>

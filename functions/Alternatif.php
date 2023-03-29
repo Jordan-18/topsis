@@ -16,20 +16,19 @@ function createAlternatif($data)
     $n_Mhs = 0;
     $n_MT = 0;
 
-
-    for($i = 0; $i < $number_of_alternatif; $i++){
-        $name_alternatif = strtolower(stripslashes($data['name_alternatif'.($i+1)]));
-        // $matkul_alternatif = strtolower(stripslashes($data['matkul_alternatif'.($i+1)]));
-        $nilai_dosen_alternatif = $data['nilai_dosen_alternatif'.($i+1)];
-        $nilai_mahasiswa_alternatif = $data['nilai_mahasiswa_alternatif'.($i+1)];
-        $nilai_matkul_alternatif = $data['nilai_matkul_alternatif'.($i+1)];
+    foreach($data['alternatif_num'] as $key=>$value){
+        $name_alternatif = strtolower(stripslashes($data['name_alternatif'.($value)]));
+        // $matkul_alternatif = strtolower(stripslashes($data['matkul_alternatif'.($value)]));
+        $nilai_dosen_alternatif = $data['nilai_dosen_alternatif'.($value)];
+        $nilai_mahasiswa_alternatif = $data['nilai_mahasiswa_alternatif'.($value)];
+        $nilai_matkul_alternatif = $data['nilai_matkul_alternatif'.($value)];
 
         mysqli_query($conn, "INSERT INTO alternatif VALUES('','$gen_group_id','$name_alternatif','$dosen','$mahasiswa','$nilai_dosen_alternatif','$nilai_mahasiswa_alternatif','$nilai_matkul_alternatif','','$insert_at')");
         
         
-        $n_Dsn += pow((float)$data['nilai_dosen_alternatif'.($i+1)], 2);
-        $n_Mhs += pow((float)$data['nilai_mahasiswa_alternatif'.($i+1)],2 );
-        $n_MT += pow((float)$data['nilai_matkul_alternatif'.($i+1)],2 );
+        $n_Dsn += pow((float)$data['nilai_dosen_alternatif'.($value)], 2);
+        $n_Mhs += pow((float)$data['nilai_mahasiswa_alternatif'.($value)],2 );
+        $n_MT += pow((float)$data['nilai_matkul_alternatif'.($value)],2 );
     }
 
     $n_Dsn = round(sqrt($n_Dsn), 6);
