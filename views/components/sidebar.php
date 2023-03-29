@@ -16,6 +16,18 @@
                         Dashboard
                 </a>
 
+                <div id="menuAdmin" style="display: none;">
+                    <div class="sb-sidenav-menu-heading" >Master Data</div>
+                    <a class="nav-link <?php if(basename($_SERVER['REDIRECT_URL']) == 'ms.alternatif') echo 'active'  ?>" href="ms.alternatif">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-recycle"></i></div>
+                            Alternatif
+                    </a>
+                    <a class="nav-link <?php if(basename($_SERVER['REDIRECT_URL']) == 'ms.matkul') echo 'active'  ?>" href="ms.matkul">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            Mata Kuliah
+                    </a>
+                </div>
+
                 <div class="sb-sidenav-menu-heading">Bidang Minat</div>
                 <a class="nav-link <?php if(basename($_SERVER['REDIRECT_URL']) == 'alternatif') echo 'active'  ?>" href="alternatif" <?= $menuHideforDosen ?>>
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-recycle"></i></div>
@@ -44,4 +56,8 @@
     path = path.replace('/projek/topsis_yusuf/','')
 
     $('a[href="' + path + '"]').addClass('active');
+
+    if('<?= $_SESSION["username"] ?>' == 'admin'){
+        $('#menuAdmin').css('display','')
+    }
 </script> 

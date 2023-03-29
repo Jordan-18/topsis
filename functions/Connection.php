@@ -1,5 +1,6 @@
 <?php
-$conn = mysqli_connect("45.90.230.191","u1584221_jordan","Surabaya2000","u1584221_yusuf");
+// $conn = mysqli_connect("45.90.230.191","u1584221_jordan","Surabaya2000","u1584221_yusuf");
+$conn = mysqli_connect("localhost","root","","topsis");
 
 function query($query){
     global $conn;
@@ -19,4 +20,14 @@ function generate_uuid() {
 		mt_rand( 0, 0x3fff ) | 0x8000,
 		mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
 	);
+}
+
+function getPayload($form)
+{
+    $result = [];
+    foreach($form as $key=>$value){
+        $result[$value->name] = $value->value;
+    }
+
+    return $result;
 }
