@@ -285,6 +285,10 @@ if(isset($_POST["simpan"])){
         `)
 
         $('#numberofalternatif').val(i);
+
+        $('select').select2( {
+            theme: 'bootstrap-5'
+        } );
     }
 
     onHapus = (el) => {
