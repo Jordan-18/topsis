@@ -3,6 +3,8 @@
 include("functions/Alternatif.php");
 $username = $_SESSION["username"];
 
+$dosenName = explode(" ", $username);
+
 $alternatif = query(
     "SELECT 
     alternatif.alternatif_mahasiswa, 
@@ -16,7 +18,7 @@ $alternatif = query(
     LEFT JOIN pembagian 
     ON 
     alternatif.alternatif_group = pembagian.pembagian_alternative_group
-    WHERE alternatif.alternatif_dosen LIKE '%$username%'
+    WHERE alternatif.alternatif_dosen LIKE '%$dosenName[0]%'
     GROUP BY alternatif.alternatif_group");
 
 $user_data = query("SELECT * FROM users WHERE username = '$username'");
