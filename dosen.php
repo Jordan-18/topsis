@@ -179,10 +179,15 @@ if(isset($_POST["simpan"])){
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-          <table id="alternatifDosen" class="table table-bordered">
-          </table>
+            <form id="form-approve-dosen">
+            <input type="hidden" class="form-control" id="id_dosen" name="id_dosen">
+            <input type="hidden" class="form-control" id="group_id" name="group_id">
+                <table id="alternatifDosen" class="table table-bordered">
+                </table>
+            </form>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-success" id="btn-approveall" onclick="onApproveAll();"><i class="fa-solid fa-circle-check"></i> Approve All</button>
       </div>
     </div>
   </div>
@@ -263,6 +268,7 @@ if(isset($_POST["simpan"])){
     onEdit = (el) => {
         $('#dosenEdit').modal('show');
         const id = $(el).data('group_id');
+        var dosen_id = [];
         
         $.ajax({
             url: "functions/Detail.php",
@@ -271,14 +277,17 @@ if(isset($_POST["simpan"])){
             success:function(response){
                 var hasil_alternatif = JSON.parse(response.alternatif)
                 var hasil_pembagian = JSON.parse(response.pembagian)
+                $('#btn-approveall').show()
                 $('#alternatifDosen').DataTable({
                     processing: true,
                     data : hasil_alternatif,
                     fnRowCallback: function(row,data,index,rowIndex){
+                        dosen_id.push(data.alternatif_id)
                         if(data.alternatif_approve == 1){
                             $('td:eq(5)',row).html(`
                                 <span class="badge rounded-pill bg-primary">Approved</span>
                             `)
+                            $('#btn-approveall').hide()
                         }
 
                         if(data.alternatif_approve == null || data.alternatif_approve == 0){
@@ -289,6 +298,9 @@ if(isset($_POST["simpan"])){
                                 <input type="number" class="form-control" placeholder="Nilai Dosen" min="0" max="5" name="nilai-dosen-${data.alternatif_id}" id="nilai-dosen-${data.alternatif_id}" autocomplete="off">
                             `)
                         }
+
+                        $('#group_id').val(data.alternatif_group);
+                        $('#id_dosen').val(dosen_id);
                     },
                     columns: [
                         {data: '#', name: '#', title: "#"},
@@ -342,6 +354,34 @@ if(isset($_POST["simpan"])){
                 return alert('Data Gagal Di input');
             }
         }
+    }
+
+    onApproveAll = (el) => {
+        let form = $('#form-approve-dosen').serializeArray()
+        var check = form.map(item => item.value != '');
+
+        if(check.includes(false)){
+            return alert('Nilai Dosen Belum ter isi');
+        }else{
+            if(confirm('Apakah Anda yakin menyetujui nilai ini ?')){
+                form = btoa(JSON.stringify(form))
+                $.ajax({
+                    url:"functions/functions.php",
+                    type: "POST",
+                    data: 'approveAll='+form,
+                    success:function(response){
+                        if(response){
+                            alert('Successfully')
+                            $('#dosenEdit').modal('hide')
+                        }else{
+                            alert('Falied')
+                        }
+                    }
+                })
+            }
+        }
+
+        
     }
 
     onEditDetail = (el) => {
