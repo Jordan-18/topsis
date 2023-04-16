@@ -98,20 +98,21 @@ if(isset($_POST["simpan"])){
                             <div class="row">
                                 <div id="alternatif_num"></div>
                                 
-                                <div class="col-md-3" id="row_name"></div>
+                                <div class="col-md-2" id="row_name"></div>
                                 <div class="col-md-2" id="row_matkul"></div>
-                                <div class="col-md-1" id="row_nilai_dosen"></div>
-                                <div class="col-md-1" id="row_nilai_mahasiswa"></div>
-                                <div class="col-md-1" id="row_nilai_matkul"></div>
+                                <div class="col-md-1" id="row_nilai_dosen" style="display: none;"></div>
+                                <div class="col-md-2" id="row_nilai_mahasiswa"></div>
+                                <div class="col-md-2" id="row_nilai_matkul"></div>
                                 <div class="col-md-1" id="row_delete"></div>
 
                                 <div class="col-md-3">
-                                    <div class="row">
+                                    <div class="row" style="display: none;">
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="mahasiswa" class="form-label sm">Bobot <br>Dosen</label>
                                                 <select class="form-select" aria-label="Default select example" name="b_dsn" required>
-                                                    <option value="" selected>-- Bobot </option>
+                                                    <!-- <option value="" selected>-- Bobot </option> -->
+                                                    <option value="5" selected> Penting </option>
                                                     <?php foreach($bobot as $data) :?>
                                                         <option value="<?= $data['bobot']?>"><?= $data['kepentingan']?></option>
                                                     <?php endforeach;?>
@@ -122,7 +123,8 @@ if(isset($_POST["simpan"])){
                                             <div class="mb-3">
                                                 <label for="mahasiswa" class="form-label sm">Bobot <br>Mahasiswa</label>
                                                 <select class="form-select" aria-label="Default select example" name="b_mhs" required>
-                                                    <option value="" selected>-- Bobot </option>
+                                                    <!-- <option value="" selected>-- Bobot </option> -->
+                                                    <option value="4" selected> Penting </option>
                                                     <?php foreach($bobot as $data) :?>
                                                         <option value="<?= $data['bobot']?>"><?= $data['kepentingan']?></option>
                                                     <?php endforeach;?>
@@ -131,9 +133,10 @@ if(isset($_POST["simpan"])){
                                         </div>
                                         <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label for="mahasiswa" class="form-label sm">Bobot <br>Mata Kuliah</label>
+                                                <label for="mahasiswa" class="form-label sm">Bobot <br>Matkul</label>
                                                 <select class="form-select" aria-label="Default select example" name="b_mt" required>
-                                                    <option value="" selected>-- Bobot </option>
+                                                    <!-- <option value="" selected>-- Bobot </option> -->
+                                                    <option value="5" selected>Penting </option>
                                                     <?php foreach($bobot as $data) :?>
                                                         <option value="<?= $data['bobot']?>"><?= $data['kepentingan']?></option>
                                                     <?php endforeach;?>
@@ -231,7 +234,7 @@ if(isset($_POST["simpan"])){
         $('#row_name').append(`
             <div class="input_name mb-3">
                 <label for="alternatif1" class="form-label">Name Alternatif</label>
-                <select class="form-control" id="name_alternatif${i}" name="name_alternatif${i}" required>
+                <select class="form-control" id="name_alternatif${i}" name="name_alternatif${i}" required data-num="${i}" onchange="onMatkul(this)">
                     <option value="" disabled selected>-- Pilih --</option>
                 <select>
             </div>
@@ -267,15 +270,31 @@ if(isset($_POST["simpan"])){
         $('#row_nilai_mahasiswa').append(`
                 <div class="input_nilai mb-3">
                     <label for="alternatif" class="form-label">Mahasiswa</label>
-                    <input type="number" class="form-control" id="nilai_mahasiswa_alternatif${i}" name="nilai_mahasiswa_alternatif${i}" placeholder="Nilai" min="0" max="5" required>
+                    <select class="form-control" id="nilai_mahasiswa_alternatif${i}" name="nilai_mahasiswa_alternatif${i}" required>
+                        <option value="" selected> -- Pilih --</option>
+                        <option value="5">Sangat Setuju</option>
+                        <option value="4">Setuju</option>
+                        <option value="3">Netral</option>
+                        <option value="2">Tidak Setuju</option>
+                        <option value="1">Sangat Tidak Setuju</option>
+                    <select>
                 </div>
         `)
+                    // <input type="number" class="form-control" id="nilai_mahasiswa_alternatif${i}" name="nilai_mahasiswa_alternatif${i}" placeholder="Nilai" min="0" max="5" required>
         $('#row_nilai_matkul').append(`
                 <div class="input_nilai mb-3">
                     <label for="alternatif" class="form-label">Mata Kuliah</label>
-                    <input type="number" class="form-control" id="nilai_matkul_alternatif${i}" name="nilai_matkul_alternatif${i}" placeholder="Nilai" min="0" max="5" required>
+                    <select class="form-control" id="nilai_matkul_alternatif${i}" name="nilai_matkul_alternatif${i}" required>
+                        <option value="" selected> -- Pilih --</option>
+                        <option value="5">A+=A-</option>
+                        <option value="4">B+=B-</option>
+                        <option value="3">C+=C-</option>
+                        <option value="2">D+=D-</option>
+                        <option value="1">E+=E-</option>
+                    <select>
                 </div>
         `)
+                    // <input type="number" class="form-control" id="nilai_matkul_alternatif${i}" name="nilai_matkul_alternatif${i}" placeholder="Nilai" min="0" max="5" required>
 
         $('#row_delete').append(`
                 <div class="input_name mb-3">
@@ -303,6 +322,24 @@ if(isset($_POST["simpan"])){
         $('#button_delete'+id).parent().remove()
 
         alternatif_num--
+    }
+
+    onMatkul = (el) => {
+        var num = $(el).data('num');
+        var alternatif = $(`#name_alternatif${num}`).val()
+        $.ajax({
+        url: "functions/master/mata_kuliah.php?byAlternatif="+alternatif,
+        success:function(response){
+            var data = JSON.parse(response)
+
+            $(`#matkul_alternatif${num}`).empty()
+            $.each(data, (key, value) =>{
+                $(`#matkul_alternatif${num}`).append(`
+                    <option value="${value.mata_kuliah_name}">${value.mata_kuliah_name}</option>
+                `)
+            })
+        }
+    })
     }
 </script>
 <script>

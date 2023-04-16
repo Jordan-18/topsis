@@ -69,6 +69,13 @@
                 <label for="MataKuliah-name" class="form-label">Mata Kuliah Name</label>
                 <input type="text" class="form-control" name="mata_kuliah_name" id="mata_kuliah_name" placeholder="Nama Mata Kuliah">
             </div>
+
+            <div class="input_name mb-3">
+                <label for="alternatif1" class="form-label">Name Alternatif</label>
+                <select class="form-control" id="name_alternatif" name="name_alternatif" required>
+                    <option value="" disabled selected>-- Pilih --</option>
+                <select>
+            </div>
         </form>
       </div>
 
@@ -80,6 +87,10 @@
 <!-- Display Data -->
 <script>
     $(document).ready( function (){
+        $('select').select2( {
+            theme: 'bootstrap-5'
+        } );
+        
         $.ajax({
             url: "functions/master/mata_kuliah.php?index",
             success:function(response){
@@ -88,7 +99,7 @@
                 $('#table_ms-mata_kuliah').DataTable({
                     data : data,
                     fnRowCallback: function(row,data,index,rowIndex){
-                        $('td:eq(2)',row).html(`
+                        $('td:eq(3)',row).html(`
                             <button class="btn btn-warning" name="detail" data-id="${data.mata_kuliah_id}" onclick="onEdit(this);"><i class="fa-solid fa-pen"></i></button>
                             <button class="btn btn-danger" name="detail" data-id="${data.mata_kuliah_id}" onclick="onDelete(this);"><i class="fa-solid fa-trash"></i></button>
                         `)
@@ -96,6 +107,7 @@
                     columns: [
                             {data: '', name: '', width:'5%', title: "#"},
                             {data: 'mata_kuliah_name', name: 'mata_kuliah_name', title: "Mata Kuliah"},
+                            {data: 'ms_alternatif_name', name: 'ms_alternatif_name', title: "Alternatif"},
                             {title: "Action"},
                         ],
                     columnDefs: [{
@@ -104,6 +116,19 @@
                     }]
                 })
 
+            }
+        })
+
+        $.ajax({
+            url: "functions/master/alternatif.php?index=",
+            success:function(response){
+                var data = JSON.parse(response)
+
+                $.each(data, (key, value) =>{
+                    $(`#name_alternatif`).append(`
+                        <option value="${value.ms_alternatif_id}">${value.ms_alternatif_name}</option>
+                    `)
+                })
             }
         })
     })
@@ -146,6 +171,7 @@
 
                 $('#mata_kuliah_id').val(data['mata_kuliah_id']);
                 $('#mata_kuliah_name').val(data['mata_kuliah_name']);
+                $('#name_alternatif').val(data['mata_kuliah_alternatif']);
             }
         })
         $('#modalmatakuliah-footer').empty()
