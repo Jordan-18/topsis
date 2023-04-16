@@ -171,7 +171,7 @@
 
                 $('#mata_kuliah_id').val(data['mata_kuliah_id']);
                 $('#mata_kuliah_name').val(data['mata_kuliah_name']);
-                $('#name_alternatif').val(data['mata_kuliah_alternatif']);
+                $('#name_alternatif').val(data['mata_kuliah_alternatif']).trigger('change');
             }
         })
         $('#modalmatakuliah-footer').empty()
