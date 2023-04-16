@@ -136,7 +136,7 @@ if(isset($_POST["simpan"])){
                                                 <label for="mahasiswa" class="form-label sm">Bobot <br>Matkul</label>
                                                 <select class="form-select" aria-label="Default select example" name="b_mt" required>
                                                     <!-- <option value="" selected>-- Bobot </option> -->
-                                                    <option value="5" selected>Penting </option>
+                                                    <option value="4" selected>Penting </option>
                                                     <?php foreach($bobot as $data) :?>
                                                         <option value="<?= $data['bobot']?>"><?= $data['kepentingan']?></option>
                                                     <?php endforeach;?>
